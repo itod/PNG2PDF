@@ -21,7 +21,13 @@ void run() {
     
     NSUInteger c = 0;
     NSFileManager *mgr = [NSFileManager defaultManager];
-    NSArray *pngFilePaths = [mgr subpathsOfDirectoryAtPath:pngDirPath error:nil];
+    NSArray *pngFilePaths = [mgr contentsOfDirectoryAtPath:pngDirPath error:nil];
+    pngFilePaths = [pngFilePaths sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        if (![[obj1 pathExtension] isEqualToString:@"png"]) return NSOrderedAscending;
+        if (![[obj2 pathExtension] isEqualToString:@"png"]) return NSOrderedAscending;
+        return [[obj1 stringByDeletingPathExtension] integerValue] - [[obj2 stringByDeletingPathExtension] integerValue];
+    }];
+    
     for (NSString *pngFilename in pngFilePaths) {
         if (![[pngFilename pathExtension] isEqualToString:@"png"]) continue;
         
